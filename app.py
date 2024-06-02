@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 from io import BytesIO
-import xlsxwriter as xtr
+#import xlsxwriter as xtr
 import altair as alt
 from db_setup import*
 
