@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 from io import BytesIO
-#import xlsxwriter as xtr
+import xlsxwriter 
 import altair as alt
 from db_setup import*
 
@@ -18,11 +18,71 @@ logo_url = "https://c.saavncdn.com/753/Jay-Shree-Ram-Hindi-2022-20220621115533-5
 st.sidebar.image(logo_url, use_column_width=True)
 st.sidebar.title("Happy HR India Limited")
 
+# CSS for the card layout
+card_css = """
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    .container {
+        padding: 2px 16px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 10px;
+    }
+</style>
+"""
+
+# Inject CSS with Markdown
+st.markdown(card_css, unsafe_allow_html=True)
+
+# Create a grid of cards
+st.markdown("""
+<div class="grid-container">
+    <div class="card">
+        <div class="container">
+            <h4><b>185</b></h4>
+            <p>Active Employee.</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="container">
+            <h4><b>340</b></h4>
+            <p>Exit Employee</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="container">
+            <h4><b>525</b></h4>
+            <p>Total Employee count</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Additional content or widgets can be added below
+#st.write("This is a card view example in Streamlit.")
+
+
+
+
+st.write("                                                                                                                                ")
+st.write("                                                                                                                                ")
+st.write("                                                                                                                                ")
+
 # Initialize the database
 init_db()
-
-# Streamlit Application
-st.title("Data Analysis Application")
 
 # Navigation
 menu = ["PayView","Import Data","Download Payroll Data","Download Attendance Data","Dashboard"]
@@ -31,7 +91,7 @@ choice = st.sidebar.selectbox("Menu", menu)
 # Bar Chart for Male and Female wise Gross Salary
 
 if choice == "PayView":
-    month = st.text_input("Enter Month (e.g., 202305 for May 2023)")
+    month = st.sidebar.text_input("Enter Month (e.g., 202305 for May 2023)")
     if month:
         conn = sqlite3.connect('data_analysis.db')
         payroll_data = pd.read_sql(f"SELECT * FROM payroll WHERE Month_Val = '{month}'", conn)
@@ -42,7 +102,7 @@ if choice == "PayView":
          
         with col1:
         # New chart: Department-wise Gross_Salary, Total_Deductions, Net_Pay
-            st.subheader("Department-wise Gross Salary, Total Deductions, and Net Pay")
+            #st.subheader("Department-wise Gross Salary, Total Deductions, and Net Pay")
             payroll_data ['Net_Pay'] = payroll_data ['Gross_Salary'] - payroll_data ['Total_Deductions']
             chart_data = pd.melt(payroll_data , id_vars=['Department_Name'], value_vars=['Gross_Salary', 'Total_Deductions', 'Net_Pay'], var_name='Metric', value_name='Value')
             chart = alt.Chart(chart_data).mark_bar().encode(
@@ -63,7 +123,7 @@ if choice == "PayView":
             st.altair_chart(chart, use_container_width=False)
         
         with col2:
-            st.subheader("Male and Female wise Gross Salary")
+            #st.subheader("Male and Female wise Gross Salary")
             chart = alt.Chart(payroll_data).mark_bar().encode(
             x='Gender:N',
             y='Gross_Salary:Q',
